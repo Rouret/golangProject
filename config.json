@@ -1,0 +1,6 @@
+{
+    "BrokerUrl" : "tcp://localhost",
+    "BrokerPort" : 1883,
+    "QOS" : 0,
+    "ID" : 123
+}
