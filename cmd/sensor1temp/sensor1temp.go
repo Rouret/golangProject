@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"strconv"
+	"fmt"
 	"time"
 
 	"foo.org/myapp/pkg/config"
@@ -19,11 +19,13 @@ type Message struct {
 }
 
 const TOPIC = "temperature"
-const DELAY = 10
+const DELAY = 2
 
 func main() {
 	config := config.GetConfig()
-	client := mqtt.Connect(config.BrokerUrl+":"+strconv.Itoa(config.BrokerPort), strconv.Itoa(config.ID))
+	//client := mqtt.Connect(config.BrokerUrl+":"+strconv.Itoa(config.BrokerPort), strconv.Itoa(config.ID))
+	client := mqtt.Connect("tcp://localhost:1883", "samir")
+	fmt.Print(config.BrokerUrl)
 	client.Connect().Wait()
 
 	for range time.Tick(time.Second * DELAY) {
@@ -35,6 +37,7 @@ func main() {
 			Timestamp: time.Now().Unix(),
 		})
 		token := client.Publish(TOPIC, byte(config.QOS), false, message)
+		fmt.Printf(string(message))
 		token.Wait()
 	}
 }
