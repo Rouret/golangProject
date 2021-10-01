@@ -1,6 +1,10 @@
 {
-    "BrokerUrl" : "tcp://localhost",
-    "BrokerPort" : 1883,
-    "QOS" : 0,
-    "ID" : 123
+    "BrokerUrl": "tcp://localhost",
+    "BrokerPort": 1883,
+    "QOS": 0,
+    "ID": 123,
+    "IATA": "CGN",
+    "ValueType": "TEMP",
+    "Topic": "temperature",
+    "DelayMessage": 1
 }
