@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
-	broker "foo.org/myapp/pkg/mqtt"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"foo.org/myapp/pkg/config"
+	"foo.org/myapp/pkg/mqtt"
 )
 
 const TOPIC = "temperature"
-
-var knt int
 
 type Data struct {
 	IdCapteur int
@@ -24,12 +23,11 @@ type Data struct {
 }
 
 func main() {
-	knt = 0
+
 	keepAlive := make(chan os.Signal)
 	signal.Notify(keepAlive, os.Interrupt, syscall.SIGINT)
-	//config := config.GetConfig()
-	//client := mqtt.Connect(config.BrokerUrl+":"+strconv.Itoa(config.BrokerPort), strconv.Itoa(config.ID))
-	client := broker.Connect("tcp://localhost:1883", "samir2")
+	config := config.GetConfig()
+	client := mqtt.Connect(config.BrokerUrl+":"+strconv.Itoa(config.BrokerPort), strconv.Itoa(config.ID3))
 	client.Connect().Wait()
 
 	if token := client.Subscribe(TOPIC, 0, onReceive); token.Wait() && token.Error() != nil {

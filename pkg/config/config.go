@@ -9,8 +9,11 @@ import (
 type Configuration struct {
 	BrokerUrl  string
 	BrokerPort int
+	Delay      int
 	QOS        int
-	ID         int
+	ID1        int
+	ID2        int
+	ID3        int
 }
 
 func GetConfig() Configuration {

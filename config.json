@@ -1,6 +1,10 @@
 {
     "BrokerUrl" : "tcp://localhost",
     "BrokerPort" : 1883,
+    "Delay" : 5,
     "QOS" : 0,
-    "ID" : 123
+    "ID1" : 1,
+    "ID2" : 2,
+    "ID3" : 3
+    
 }
