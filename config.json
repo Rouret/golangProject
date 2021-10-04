@@ -6,5 +6,5 @@
     "IATA": "CGN",
     "ValueType": "TEMP",
     "Topic": "temperature",
-    "DelayMessage": 1
+    "DelayMessage": 10
 }

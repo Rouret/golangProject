@@ -7,6 +7,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type Configuration struct {
@@ -22,8 +23,6 @@ type Configuration struct {
 
 func GetConfig() Configuration {
 	var config Configuration
-	getEnvConfig()
-
 	if len(os.Args) != 1 {
 		fmt.Println("CONFIG BY CLI")
 		fmt.Println("WARNING:  Si des paramètres ne sont pas renseignés, ils prennent les valeurs pas défaut.")
@@ -71,13 +70,13 @@ func getCLIConfig() Configuration {
 }
 
 func getConfigByFile() Configuration {
-	fileName := "./config.json"
-	file, _ := os.Open(fileName)
+
+	file, _ := os.Open(getCurrentPath())
 	decoder := json.NewDecoder(file)
 	configuration := getDefaultConfig()
 	err := decoder.Decode(&configuration)
 	if err != nil {
-		fmt.Errorf("Fichier " + fileName + " est introuvable, la configuration par défaut est appliquée")
+		fmt.Println("Fichier de configuration est introuvable, la configuration par défaut est appliquée")
 		configuration = getDefaultConfig()
 	}
 	return configuration
@@ -120,4 +119,12 @@ func getDefaultConfig() Configuration {
 		Topic:        "default",
 		DelayMessage: 10,
 	}
+}
+
+func getCurrentPath() string {
+	rawPath := os.Args[0]
+	splited := strings.Split(rawPath, "\\")
+	str := splited[:len(splited)-1]
+	slice := strings.Join(str, "\\")
+	return slice + "\\config.json"
 }

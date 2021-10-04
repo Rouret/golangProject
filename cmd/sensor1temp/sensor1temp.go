@@ -18,7 +18,6 @@ type Message struct {
 	Timestamp int64
 }
 
-
 func main() {
 	config := config.GetConfig()
 	brokerPort := strconv.Itoa(config.BrokerPort)
