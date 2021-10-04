@@ -35,9 +35,9 @@ func GetConfig() Configuration {
 			config = configENV
 		} else {
 			fmt.Println("CONFIG BY CONF FILE")
+			fmt.Println("WARNING:  Si des paramètres ne sont pas renseignés, ils prennent les valeurs pas défaut.")
 			config = getConfigByFile()
 		}
-		d
 	}
 	return config
 }
@@ -45,7 +45,7 @@ func GetConfig() Configuration {
 // Exemple : *.exe -host=test -port=123 -qos=0 -id=1234 -iata=TEST -type=TEST -topic=test -delay=1
 // Exemple :  fonctionnel -host=tcp://localhost -port=1883 -qos=0 -id=123 -iata=CGT -type=TEMP -topic=temperature -delay=1
 func getCLIConfig() Configuration {
-	defaultConfig := getDefaultCongif()
+	defaultConfig := getDefaultConfig()
 
 	brokerUrl := flag.String("host", defaultConfig.BrokerUrl, "URL du broker")
 	port := flag.Int("port", defaultConfig.BrokerPort, "Port du broker")
@@ -74,18 +74,18 @@ func getConfigByFile() Configuration {
 	fileName := "./config.json"
 	file, _ := os.Open(fileName)
 	decoder := json.NewDecoder(file)
-	configuration := Configuration{}
+	configuration := getDefaultConfig()
 	err := decoder.Decode(&configuration)
 	if err != nil {
 		fmt.Errorf("Fichier " + fileName + " est introuvable, la configuration par défaut est appliquée")
-		configuration = getDefaultCongif()
+		configuration = getDefaultConfig()
 	}
 	return configuration
 }
 
 func getEnvConfig() (Configuration, bool) {
 	isOnePresent := false
-	defaultConfig := getDefaultCongif()
+	defaultConfig := getDefaultConfig()
 	reflectDefaultConfig := reflect.ValueOf(&defaultConfig)
 	elm := reflectDefaultConfig.Elem()
 
@@ -109,7 +109,7 @@ func getEnvConfig() (Configuration, bool) {
 	return elm.Interface().(Configuration), isOnePresent
 }
 
-func getDefaultCongif() Configuration {
+func getDefaultConfig() Configuration {
 	return Configuration{
 		BrokerUrl:    "tcp://localhost",
 		BrokerPort:   1883,
