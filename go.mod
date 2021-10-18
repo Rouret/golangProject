@@ -1,4 +1,4 @@
-module foo.org/myapp
+module github.com/Rouret/golangProject
 
 go 1.17
 

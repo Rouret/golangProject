@@ -11,20 +11,12 @@ import (
 	"syscall"
 	"time"
 
-	"foo.org/myapp/pkg/config"
+	"github.com/Rouret/golangProject/internal/config"
+	"github.com/Rouret/golangProject/internal/sensor"
 	"github.com/Rouret/mqtt.golang"
 	paho "github.com/eclipse/paho.mqtt.golang"
 )
 
-const TOPIC = "temperature"
-
-type Data struct {
-	IdCapteur int
-	IATA      string
-	TypeValue string
-	Value     float64
-	Timestamp int
-}
 
 func main() {
 	config := config.GetConfig()
@@ -49,15 +41,12 @@ func main() {
 }
 
 var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
-	var info Data
+	var info sensor.Message
 
 	json.Unmarshal([]byte(msg.Payload()), &info)
 	log.Printf("Info Received from " + info.IATA + "\n")
-	i, err := strconv.ParseInt(strconv.Itoa(info.Timestamp), 10, 64)
-	if err != nil {
-		panic(err)
-	}
-	tm := time.Unix(i, 0)
+	
+	tm := time.Unix(info.Timestamp, 0)
 	date := tm.Format("2006-01-02")
 
 	csvName := info.IATA + "-" + date + "-" + info.TypeValue + ".csv"

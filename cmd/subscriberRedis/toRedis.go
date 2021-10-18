@@ -8,13 +8,11 @@ import (
 	"strconv"
 	"syscall"
 
-	"foo.org/myapp/pkg/config"
+	"github.com/Rouret/golangProject/internal/config"
 	"github.com/Rouret/mqtt.golang"
 
 	paho "github.com/eclipse/paho.mqtt.golang"
 )
-
-const TOPIC = "temperature"
 
 type Data struct {
 	IdCapteur int
