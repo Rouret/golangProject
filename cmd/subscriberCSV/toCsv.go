@@ -10,10 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"foo.org/myapp/pkg/config"
-	. "foo.org/myapp/pkg/mqtt"
-
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/Rouret/mqtt.golang"
+	paho "github.com/eclipse/paho.mqtt.golang"
 )
 
 const TOPIC = "temperature"
@@ -30,14 +28,14 @@ func main() {
 
 	keepAlive := make(chan os.Signal)
 	signal.Notify(keepAlive, os.Interrupt, syscall.SIGINT)
-	config := config.GetConfig()
-	client := Connect(config.BrokerUrl+":"+strconv.Itoa(config.BrokerPort), strconv.Itoa(config.ID2))
-	client.Connect().Wait()
+	//config := config.GetConfig()
 
-	if token := client.Subscribe(TOPIC, 0, onReceive); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
-	}
+	mqtt.Setup(mqtt.LibConfiguration{
+		IsPersistent: true,
+	})
+
+	mqtt.Connect("tcp://localhost:1883", "samir2")
+	mqtt.Subscribe(TOPIC, 0, onReceive)
 
 	fmt.Println("Subscribed")
 
@@ -45,7 +43,7 @@ func main() {
 
 }
 
-var onReceive mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
 	var info Data
 
 	json.Unmarshal([]byte(msg.Payload()), &info)
