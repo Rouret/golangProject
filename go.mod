@@ -30,5 +30,8 @@ require (
 
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-sqlite3 v1.14.8
 )
+
+require github.com/garyburd/redigo v1.6.2 // indirect
