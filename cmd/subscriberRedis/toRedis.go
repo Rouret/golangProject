@@ -14,8 +14,6 @@ import (
 	paho "github.com/eclipse/paho.mqtt.golang"
 )
 
-const TOPIC = "temperature"
-
 type Data struct {
 	IdCapteur int
 	IATA      string

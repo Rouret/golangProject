@@ -6,16 +6,9 @@ import (
 
 	"github.com/Rouret/golangProject/internal/config"
 	"github.com/Rouret/golangProject/internal/random"
+	"github.com/Rouret/golangProject/internal/sensor"
 	"github.com/Rouret/mqtt.golang"
 )
-
-type Message struct {
-	IdCapteur int
-	IATA      string
-	TypeValue string
-	Value     float32
-	Timestamp int64
-}
 
 func main() {
 	config := config.GetConfig()
@@ -29,7 +22,7 @@ func main() {
 	mqtt.Connect(config.BrokerUrl+":"+brokerPort, idClient)
 	
 	for range time.Tick(time.Second * time.Duration(config.DelayMessage)) {
-		message := Message{
+		message := sensor.Message{
 			IdCapteur: config.ID,
 			IATA:      config.IATA,
 			TypeValue: config.ValueType,
