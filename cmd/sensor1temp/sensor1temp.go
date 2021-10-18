@@ -18,23 +18,22 @@ type Message struct {
 	Timestamp int64
 }
 
-const TOPIC = "temperature"
-const DELAY = 10
-
 func main() {
 	config := config.GetConfig()
-	client := mqtt.Connect(config.BrokerUrl+":"+strconv.Itoa(config.BrokerPort), strconv.Itoa(config.ID))
+	brokerPort := strconv.Itoa(config.BrokerPort)
+	idClient := strconv.Itoa(config.ID)
+	client := mqtt.Connect(config.BrokerUrl+":"+brokerPort, idClient)
 	client.Connect().Wait()
 
-	for range time.Tick(time.Second * DELAY) {
+	for range time.Tick(time.Second * time.Duration(config.DelayMessage)) {
 		message, _ := json.Marshal(Message{
-			IdCapteur: 1,
-			IATA:      "AAA",
-			TypeValue: "TEMP",
+			IdCapteur: config.ID,
+			IATA:      config.IATA,
+			TypeValue: config.ValueType,
 			Value:     random.GetRandomFloat(20, 25),
 			Timestamp: time.Now().Unix(),
 		})
-		token := client.Publish(TOPIC, byte(config.QOS), false, message)
+		token := client.Publish(config.Topic, byte(config.QOS), false, message)
 		token.Wait()
 	}
 }
