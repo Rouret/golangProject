@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -23,6 +24,7 @@ func main() {
 	brokerPort := strconv.Itoa(config.BrokerPort)
 	idClient := strconv.Itoa(config.ID)
 	client := mqtt.Connect(config.BrokerUrl+":"+brokerPort, idClient)
+
 	client.Connect().Wait()
 
 	for range time.Tick(time.Second * time.Duration(config.DelayMessage)) {
