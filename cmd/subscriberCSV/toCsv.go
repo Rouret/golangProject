@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"foo.org/myapp/pkg/config"
+	"github.com/Rouret/golangProject/pkg/config"
 	"github.com/Rouret/mqtt.golang"
 	paho "github.com/eclipse/paho.mqtt.golang"
 )

@@ -2,13 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"time"
 
-	"foo.org/myapp/pkg/config"
-	"foo.org/myapp/pkg/mqtt"
-	"foo.org/myapp/pkg/random"
+	"github.com/Rouret/golangProject/pkg/config"
+	"github.com/Rouret/golangProject/pkg/mqtt"
+	"github.com/Rouret/golangProject/pkg/random"
 )
 
 type Message struct {
