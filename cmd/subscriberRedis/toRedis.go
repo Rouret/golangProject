@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -47,7 +49,7 @@ func main() {
 }
 
 var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
-	fmt.Printf("MSG: %s\n", msg.Payload())
+	//fmt.Printf("MSG: %s\n", msg.Payload())
 	var info Data
 	json.Unmarshal([]byte(msg.Payload()), &info)
 
@@ -79,22 +81,39 @@ var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
 
 	clientR.Set(keyBrut, json, 0).Err()
 
-	clientR.RPush(keyTimestamp, info.Value, 0).Err()
+	clientR.RPush(keyTimestamp, info.Value).Err()
+	fmt.Println(keyTimestamp + "exist")
 
 	Average, err := clientR.Get(keyAverage).Result()
-	if err != nil {
-		fmt.Println(err)
+	if err == redis.Nil {
+		clientR.LPush(keyAverage, 1).Err()
+		clientR.LPush(keyAverage, info.Value).Err()
+
+		fmt.Println(keyAverage + "does not exist")
+	} else {
+		fmt.Println("keyAverage", Average)
+		NewAverage, err := clientR.LRange(keyAverage, 0, 0).Result()
+		if err == redis.Nil {
+		}
+		Count, err := clientR.LRange(keyAverage, 1, 1).Result()
+		if err == redis.Nil {
+		}
+
+		avg, err := strconv.ParseFloat(arrayToString(NewAverage), 8)
+		cnt, err := strconv.ParseFloat(arrayToString(Count), 8)
+
+		fmt.Println(avg)
+		fmt.Println(cnt)
+		CalculatedAvg := ((cnt*avg + info.Value) / (cnt + 1))
+
+		clientR.LSet(keyAverage, 0, math.Round(CalculatedAvg*1000)/1000).Err()
+		clientR.LSet(keyAverage, 1, cnt+1).Err()
+
 	}
 
-	fmt.Println(Average)
+}
 
-	/*val, err := clientR.Get(keyBrut).Result()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(val)
-
-	fmt.Println(date)*/
+func arrayToString(a []string) string {
+	return strings.Trim(strings.Replace(fmt.Sprint(a), " ", "", -1), "[]")
 
 }
