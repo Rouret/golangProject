@@ -84,7 +84,7 @@ func CreateMessage(m Message) {
 	HandleError(err)
 	
 	// Save JSON blob to Redis
-	reply, err := c.Do("SET", "post:" + strconv.Itoa(m.IdCapteur), b).Result()
+	reply, err := c.Do("SET", "message:" + strconv.Itoa(m.IdCapteur), b).Result()
 	HandleError(err)
 	
 	fmt.Println("GET ", reply)
