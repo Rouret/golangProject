@@ -26,7 +26,7 @@ func RedisConnect() *redis.Client {
 
 
 
-func FindAll() Messages {
+/*func FindAll() Messages {
 	
 	var messages Messages
 
@@ -50,24 +50,71 @@ func FindAll() Messages {
 		messages = append(messages, message)
 	}
 	return messages
-}
+}*/
 
-func FindMessage(id int) Message {
+func FindAll() Messages {
 	
-	var message Message
+	var messages Messages
 
 	c := RedisConnect()
 	defer c.Close()
 	
-	reply, err := c.Do("GET", "message:" + strconv.Itoa(id)).Result()
+	//Redigo returns everithing as type interface{}
+	keys, err := c.Get("message:*").Result()
+	HandleError(err)
+	
+	for _, k := range keys.([]interface{}) {
+		
+		var message Message
+		
+		reply, err := c.Do("GET", k.([]byte)).Result()
+		HandleError(err)
+		
+		if err := json.Unmarshal(reply.([]byte), &message); err != nil {
+			panic(err)
+		}
+		messages = append(messages, message)
+	}
+	return messages
+}
+
+
+func FindMessage(id int) string {
+	
+	//var message Message
+
+	c := RedisConnect()
+	defer c.Close()
+	
+	//reply, err := c.Do("GET", "message:" + strconv.Itoa(id)).Result()
+	reply,err := c.Get("message:" + strconv.Itoa(id)).Result()
 	HandleError(err)
 	
 	fmt.Println("GET OK")
+	fmt.Println(reply)
 	
-	if err = json.Unmarshal(reply.([]byte), &message); err != nil {
-		panic(err)
+	//TODO passer la chaîne JSON en String -> struct Message
+	/*data := []byte(reply)
+	err2 := json.Unmarshal(data, &message)
+	if(err2 != nil) {
+		log.Fatal(err2)
 	}
-	return message
+	fmt.Println(message)*/
+
+/*	message = make(map[string][]Message)
+	errStruct := json.Unmarshal([]byte(reply), &message)
+	if errStruct != nil {
+		panic(errStruct)
+	}
+
+	fmt.Printf("\n\n json object:::: %v", message)*/
+
+
+	/*if err = json.Unmarshal(reply.([]byte), &message); err != nil {
+		panic(err)
+	}*/
+
+	return reply
 }
 
 func CreateMessage(m Message) {
