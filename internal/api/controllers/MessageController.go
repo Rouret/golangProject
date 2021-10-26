@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -13,17 +12,18 @@ import (
 	mux "github.com/julienschmidt/httprouter"
 )
 
-//Afficher un string
-func Index(w http.ResponseWriter, r *http.Request, _ mux.Params) {
-    fmt.Fprintf(w, "<h1>Hello, welcome to my blog</h1>")
+// Setup du responseWriter
+func prepareResponseWriter(responseWriter http.ResponseWriter) http.ResponseWriter{
+	responseWriter.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	return responseWriter
 }
 
 //Afficher all
-func MessageIndex(w http.ResponseWriter, r *http.Request, _ mux.Params) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+func GetAllMessages(w http.ResponseWriter, r *http.Request, _ mux.Params) {
+	w = prepareResponseWriter(w);
 	w.WriteHeader(http.StatusOK)
 	
-	messages := Persitence.FindAll()  // TODO
+	messages := Persitence.FindAllMessages()
 
 	if err := json.NewEncoder(w).Encode(messages); err != nil {
 			panic(err)
@@ -32,6 +32,7 @@ func MessageIndex(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 
 //Afficher un élément par l'id
 func MessageShow(w http.ResponseWriter, r *http.Request, p mux.Params) {
+	w = prepareResponseWriter(w);
 	id, err := strconv.Atoi(p.ByName("messageId")) //conversion de l'id récupéré en une variable integer
 	Persitence.HandleError(err)
 
@@ -44,6 +45,7 @@ func MessageShow(w http.ResponseWriter, r *http.Request, p mux.Params) {
 }
 
 func MessageCreate(w http.ResponseWriter, r *http.Request, _ mux.Params) {
+	w = prepareResponseWriter(w);
 	var message Models.Message
 	
 	// Read request body and close it

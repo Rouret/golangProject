@@ -12,18 +12,12 @@ import (
 
 var currentMessageId int
 
-func RedisConnect() *redis.Client {
-	//c, err := redis.Dial("tcp", ":6379")
-
-	clientR := redis.NewClient(&redis.Options{
+func redisConnect() *redis.Client {
+	return redis.NewClient(&redis.Options{
         Addr:     "localhost:6379",
         Password: "",
         DB:       0,
     })
-
-
-	//HandleError(err)
-	return clientR
 }
 
 func HandleError(err error) {
@@ -33,41 +27,29 @@ func HandleError(err error) {
 }
 
 
-func FindAll() Models.Messages {
+func FindAllMessages() Models.Messages {
 	println("FindAll() method")
-
 	var messages Models.Messages
 
-	c := RedisConnect()
-	defer c.Close()
+	redisConnection := redisConnect()
+	defer redisConnection.Close()
 	
-	println("FindAll() before do")
-
-	//Redigo returns everithing as type interface{}
-	keys, err := c.Do("KEYS", "message:*").Result()
-	//keys, err := redis.Scan(c.Do("KEYS", "message:*"))
-	//keys, err := redis.Strings(c.Do("KEYS", "*"))
+	keys, err := redisConnection.Do("KEYS", "message:*").Result()
 	HandleError(err)
 	
-	println("FindAll() after do ", keys)
+	for _, key := range keys.([]interface{}) {
 
-	for _, k := range keys.([]interface{}) {
-		
 		var message Models.Message
-		println("FindAll() boucle do before get ")
-		//reply, err := c.Do("GET", k.([]byte)).Result()
-		reply, err := c.Do("GET", k.(string)).String() //test et converti si type String
-		HandleError(err) //erreur
-		println("FindAll() boucle do after get ")
-		
-		//[]byte(reply) fonction pour convertir en byte
-		if err := json.Unmarshal([]byte(reply), &message); err != nil {
-			panic(err)
+
+		reply, err := redisConnection.Do("GET", key.(string)).String() //Get l'objet de la clé 'key'
+		HandleError(err)
+
+		if err := json.Unmarshal([]byte(reply), &message); err != nil { //Transforme le json de la value dans valeur dans la variable message
+			HandleError(err)
 		}
-		messages = append(messages, message)
+		messages = append(messages, message) // Ajoute le messages au reste des messages
 	}
 
-	println("FindAll() fin")
 	return messages
 }
 
@@ -102,7 +84,7 @@ func FindMessage(id int) Models.Message {
 	
 	var message Models.Message
 
-	c := RedisConnect()
+	c := redisConnect()
 	defer c.Close()
 	fmt.Println("GET  FindMessage id avant do")
 	reply, err := c.Do("GET", "message:" + strconv.Itoa(id)).String()
@@ -143,7 +125,7 @@ func CreateMessage(m Models.Message) {
 	m.IdCapteur = currentMessageId
 	m.Timestamp = time.Now().Unix() //Unix() to convert into int
 	
-	c := RedisConnect()
+	c := redisConnect()
 	defer c.Close()
 	
 	b, err := json.Marshal(m)

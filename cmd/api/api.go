@@ -24,23 +24,18 @@ func getRoutes() Models.Routes {
 	return Models.Routes{
 		Models.Route{
 			Method: "GET",
-			Path: "/",
-			Handle: Controllers.Index,
-		},
-		Models.Route{
-			Method: "GET",
 			Path: "/messages",
-			Handle: Controllers.MessageIndex,
+			Handle: Controllers.GetAllMessages,//OK
 		},
 		Models.Route{
 			Method: "GET",
 			Path: "/messages/:id",
-			Handle: Controllers.MessageShow,
+			Handle: Controllers.MessageShow,//PAS OK
 		},
 		Models.Route{
 			Method: "POST",
 			Path: "/messages",
-			Handle: Controllers.MessageCreate,
+			Handle: Controllers.MessageCreate,//PAS OK
 		},
 	}
 }
