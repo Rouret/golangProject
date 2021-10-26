@@ -2,7 +2,6 @@ package persitence
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	Models "github.com/Rouret/golangProject/internal/models"
@@ -27,15 +26,9 @@ func HandleError(err error) {
 	}
 }
 
-
-func FindAllMessages() Models.Messages {
-	println("FindAll() method")
+func extractDataFromRedis(redisConnection *redis.Client,keyFilter string) Models.Messages {
 	var messages Models.Messages
-
-	redisConnection := redisConnect()
-	defer redisConnection.Close()
-	
-	keys, err := redisConnection.Do("KEYS", "*").Result()
+	keys, err := redisConnection.Do("KEYS", keyFilter).Result()
 	HandleError(err)
 	
 	for _, key := range keys.([]interface{}) {
@@ -54,42 +47,28 @@ func FindAllMessages() Models.Messages {
 	return messages
 }
 
-func FindMessage(id int) Models.Message {
+
+func FindAllMessages() Models.Messages {
+	println("FindAll() method")
+
+	redisConnection := redisConnect()
+	defer redisConnection.Close()
 	
-	var message Models.Message
+	return extractDataFromRedis(redisConnection,"*")
+}
 
-	c := redisConnect()
-	defer c.Close()
-	fmt.Println("GET  FindMessage id avant do")
-	reply, err := c.Do("GET", "message:" + strconv.Itoa(id)).String()
-	//reply,err := c.Get("message:" + strconv.Itoa(id)).Result()
-	HandleError(err)
+func FindAllMessageByAirportId(IATA string) Models.Messages {
+	redisConnection := redisConnect()
+	defer redisConnection.Close()
 	
-	fmt.Println("GET OK FindMessage id")
-	fmt.Println(reply)
+	return extractDataFromRedis(redisConnection,IATA + ":*")
+}
+
+func FindAllMessageByAirportIdAndValueType(IATA string,valueType string) Models.Messages {
+	redisConnection := redisConnect()
+	defer redisConnection.Close()
 	
-	//TODO passer la chaîne JSON en String -> struct Message
-	/*data := []byte(reply)
-	err2 := json.Unmarshal(data, &message)
-	if(err2 != nil) {
-		log.Fatal(err2)
-	}
-	fmt.Println(message)*/
-
-	//message = make(map[byte][]Message)
-	errStruct := json.Unmarshal([]byte(reply), &message)
-	if errStruct != nil {
-		panic(errStruct)
-	}
-
-	fmt.Printf("\n\n json object:::: %v", message)
-
-
-	/*if err = json.Unmarshal(reply.([]byte), &message); err != nil {
-		panic(err)
-	}*/
-
-	return message
+	return extractDataFromRedis(redisConnection,IATA + ":" + valueType + ":*")
 }
 
 func CreateMessage(message Models.Message) {
