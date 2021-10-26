@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	mux "github.com/julienschmidt/httprouter" //using HTTPRouter package

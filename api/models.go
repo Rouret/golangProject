@@ -1,4 +1,4 @@
-package main
+package api
 
 type Message struct {
 	IdCapteur int     `json:idCapteur`

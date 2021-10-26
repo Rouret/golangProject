@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -20,39 +20,57 @@ func RedisConnect() *redis.Client {
         DB:       0,
     })
 
+
 	//HandleError(err)
 	return clientR
 }
 
+func HandleError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
 
 
-/*func FindAll() Messages {
-	
+func FindAll() Messages {
+	println("FindAll() method")
+
 	var messages Messages
 
 	c := RedisConnect()
 	defer c.Close()
 	
+	println("FindAll() before do")
+
 	//Redigo returns everithing as type interface{}
 	keys, err := c.Do("KEYS", "message:*").Result()
+	//keys, err := redis.Scan(c.Do("KEYS", "message:*"))
+	//keys, err := redis.Strings(c.Do("KEYS", "*"))
 	HandleError(err)
 	
+	println("FindAll() after do ", keys)
+
 	for _, k := range keys.([]interface{}) {
 		
 		var message Message
+		println("FindAll() boucle do before get ")
+		//reply, err := c.Do("GET", k.([]byte)).Result()
+		reply, err := c.Do("GET", k.(string)).String() //test et converti si type String
+		HandleError(err) //erreur
+		println("FindAll() boucle do after get ")
 		
-		reply, err := c.Do("GET", k.([]byte)).Result()
-		HandleError(err)
-		
-		if err := json.Unmarshal(reply.([]byte), &message); err != nil {
+		//[]byte(reply) fonction pour convertir en byte
+		if err := json.Unmarshal([]byte(reply), &message); err != nil {
 			panic(err)
 		}
 		messages = append(messages, message)
 	}
-	return messages
-}*/
 
-func FindAll() Messages {
+	println("FindAll() fin")
+	return messages
+}
+
+/*func FindAll() Messages {
 	
 	var messages Messages
 
@@ -76,21 +94,21 @@ func FindAll() Messages {
 		messages = append(messages, message)
 	}
 	return messages
-}
+}*/
 
 
-func FindMessage(id int) string {
+func FindMessage(id int) Message {
 	
-	//var message Message
+	var message Message
 
 	c := RedisConnect()
 	defer c.Close()
-	
-	//reply, err := c.Do("GET", "message:" + strconv.Itoa(id)).Result()
-	reply,err := c.Get("message:" + strconv.Itoa(id)).Result()
+	fmt.Println("GET  FindMessage id avant do")
+	reply, err := c.Do("GET", "message:" + strconv.Itoa(id)).String()
+	//reply,err := c.Get("message:" + strconv.Itoa(id)).Result()
 	HandleError(err)
 	
-	fmt.Println("GET OK")
+	fmt.Println("GET OK FindMessage id")
 	fmt.Println(reply)
 	
 	//TODO passer la chaîne JSON en String -> struct Message
@@ -101,20 +119,20 @@ func FindMessage(id int) string {
 	}
 	fmt.Println(message)*/
 
-/*	message = make(map[string][]Message)
+	//message = make(map[byte][]Message)
 	errStruct := json.Unmarshal([]byte(reply), &message)
 	if errStruct != nil {
 		panic(errStruct)
 	}
 
-	fmt.Printf("\n\n json object:::: %v", message)*/
+	fmt.Printf("\n\n json object:::: %v", message)
 
 
 	/*if err = json.Unmarshal(reply.([]byte), &message); err != nil {
 		panic(err)
 	}*/
 
-	return reply
+	return message
 }
 
 func CreateMessage(m Message) {
@@ -134,5 +152,5 @@ func CreateMessage(m Message) {
 	reply, err := c.Do("SET", "message:" + strconv.Itoa(m.IdCapteur), b).Result()
 	HandleError(err)
 	
-	fmt.Println("GET ", reply)
+	fmt.Println("POST ", reply)
 }
