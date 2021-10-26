@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	Controllers "github.com/Rouret/golangProject/internal/api/controllers"
 	Persitence "github.com/Rouret/golangProject/internal/api/persistence"
@@ -35,7 +36,7 @@ func getRoutes() Models.Routes {
 		Models.Route{
 			Method: "POST",
 			Path: "/messages",
-			Handle: Controllers.MessageCreate,//PAS OK
+			Handle: Controllers.CreateMessage,//OK
 		},
 	}
 }
@@ -48,6 +49,7 @@ func testCreationMessage() {
 		IATA: "AAA",
 		TypeValue: "TEMP",
 		Value: 15.6,
+		Timestamp: time.Now().Unix(),
 	})
 	
 	Persitence.CreateMessage(Models.Message{
@@ -55,5 +57,6 @@ func testCreationMessage() {
 		IATA: "AAA",
 		TypeValue: "PRESS",
 		Value: 24.2,
+		Timestamp: time.Now().Unix(),
 	})
 }

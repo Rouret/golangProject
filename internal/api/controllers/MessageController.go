@@ -44,8 +44,9 @@ func MessageShow(w http.ResponseWriter, r *http.Request, p mux.Params) {
 	}
 }
 
-func MessageCreate(w http.ResponseWriter, r *http.Request, _ mux.Params) {
+func CreateMessage(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 	w = prepareResponseWriter(w);
+
 	var message Models.Message
 	
 	// Read request body and close it
@@ -55,16 +56,13 @@ func MessageCreate(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 
 	// Save JSON to Message struct
 	if err := json.Unmarshal(body, &message); err != nil {
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(422)
-
 		if err := json.NewEncoder(w).Encode(err); err != nil {
 				panic(err)
 		}
 	}
 	
 	Persitence.CreateMessage(message)   // We'll work on this
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
 }
 

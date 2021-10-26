@@ -4,13 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"time"
 
 	Models "github.com/Rouret/golangProject/internal/models"
 	"github.com/go-redis/redis"
 )
-
-var currentMessageId int
 
 func redisConnect() *redis.Client {
 	return redis.NewClient(&redis.Options{
@@ -18,6 +15,10 @@ func redisConnect() *redis.Client {
         Password: "",
         DB:       0,
     })
+}
+
+func createKeyId(message Models.Message)  string {
+	return message.IATA + ":" + message.TypeValue + ":" + strconv.Itoa(message.IdCapteur) + ":" + strconv.FormatInt(message.Timestamp, 10) 
 }
 
 func HandleError(err error) {
@@ -34,7 +35,7 @@ func FindAllMessages() Models.Messages {
 	redisConnection := redisConnect()
 	defer redisConnection.Close()
 	
-	keys, err := redisConnection.Do("KEYS", "message:*").Result()
+	keys, err := redisConnection.Do("KEYS", "*").Result()
 	HandleError(err)
 	
 	for _, key := range keys.([]interface{}) {
@@ -52,33 +53,6 @@ func FindAllMessages() Models.Messages {
 
 	return messages
 }
-
-/*func FindAll() Messages {
-	
-	var messages Messages
-
-	c := RedisConnect()
-	defer c.Close()
-	
-	//Redigo returns everithing as type interface{}
-	keys, err := c.Get("message:*").Result()
-	HandleError(err)
-	
-	for _, k := range keys.([]interface{}) {
-		
-		var message Message
-		
-		reply, err := c.Do("GET", k.([]byte)).Result()
-		HandleError(err)
-		
-		if err := json.Unmarshal(reply.([]byte), &message); err != nil {
-			panic(err)
-		}
-		messages = append(messages, message)
-	}
-	return messages
-}*/
-
 
 func FindMessage(id int) Models.Message {
 	
@@ -118,23 +92,15 @@ func FindMessage(id int) Models.Message {
 	return message
 }
 
-func CreateMessage(m Models.Message) {
+func CreateMessage(message Models.Message) {
 	
-	currentMessageId += 1
+	redisConnection := redisConnect()
+	defer redisConnection.Close()
 	
-	m.IdCapteur = currentMessageId
-	m.Timestamp = time.Now().Unix() //Unix() to convert into int
-	
-	c := redisConnect()
-	defer c.Close()
-	
-	b, err := json.Marshal(m)
+	jsonMessage, err := json.Marshal(message)
 	HandleError(err)
 	
-	// Save JSON blob to Redis
-	reply, err := c.Do("SET", "message:" + strconv.Itoa(m.IdCapteur), b).Result()
+	_, err = redisConnection.Do("SET", createKeyId(message), jsonMessage).Result()
 	HandleError(err)
-	
-	fmt.Println("POST ", reply)
 }
 
