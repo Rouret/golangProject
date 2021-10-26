@@ -1,40 +1,34 @@
 package main
 
 import (
-	"encoding/json"
 	"strconv"
 	"time"
 
-	"foo.org/myapp/pkg/config"
-	"foo.org/myapp/pkg/mqtt"
-	"foo.org/myapp/pkg/random"
+	"github.com/Rouret/golangProject/internal/config"
+	"github.com/Rouret/golangProject/internal/random"
+	"github.com/Rouret/golangProject/internal/sensor"
+	"github.com/Rouret/mqtt.golang"
 )
-
-type Message struct {
-	IdCapteur int
-	IATA      string
-	TypeValue string
-	Value     float32
-	Timestamp int64
-}
-
-const TOPIC = "temperature"
-const DELAY = 10
 
 func main() {
 	config := config.GetConfig()
-	client := mqtt.Connect(config.BrokerUrl+":"+strconv.Itoa(config.BrokerPort), strconv.Itoa(config.ID))
-	client.Connect().Wait()
+	brokerPort := strconv.Itoa(config.BrokerPort)
+	idClient := strconv.Itoa(config.ID)
+	
+	mqtt.Setup(mqtt.LibConfiguration{
+		IsPersistent: true,
+	})
 
-	for range time.Tick(time.Second * DELAY) {
-		message, _ := json.Marshal(Message{
-			IdCapteur: 1,
-			IATA:      "AAA",
-			TypeValue: "TEMP",
+	mqtt.Connect(config.BrokerUrl+":"+brokerPort, idClient)
+	
+	for range time.Tick(time.Second * time.Duration(config.DelayMessage)) {
+		message := sensor.Message{
+			IdCapteur: config.ID,
+			IATA:      config.IATA,
+			TypeValue: config.ValueType,
 			Value:     random.GetRandomFloat(20, 25),
 			Timestamp: time.Now().Unix(),
-		})
-		token := client.Publish(TOPIC, byte(config.QOS), false, message)
-		token.Wait()
+		}
+		mqtt.Send(config.Topic,config.QOS,message,true)
 	}
 }

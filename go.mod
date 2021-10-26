@@ -1,8 +1,9 @@
-module foo.org/myapp
+module github.com/Rouret/golangProject
 
 go 1.17
 
 require (
+	github.com/Rouret/mqtt.golang v0.0.0-20211018082710-9730acd74b1b // indirect
 	github.com/eclipse/paho.mqtt.golang v1.3.5 // indirect
 	github.com/gin-gonic/gin v1.7.4
 	github.com/gorilla/websocket v1.4.2 // indirect
