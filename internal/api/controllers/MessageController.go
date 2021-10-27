@@ -39,10 +39,10 @@ func GetAllMessageByAirportId(w http.ResponseWriter, r *http.Request, p mux.Para
 
 	log.Println("GetAllMessageByAirportId requested (IATA="+IATA+")")
 	
-	message := Persitence.FindAllMessageByAirportId(IATA)   // We'll work on this
+	messages := Persitence.FindAllMessageByAirportId(IATA)   // We'll work on this
 	
 	//Encoder le résultat en json
-	if err := json.NewEncoder(w).Encode(message); err != nil {
+	if err := json.NewEncoder(w).Encode(messages); err != nil {
 			panic(err)
 	}
 }
@@ -55,10 +55,27 @@ func GetAllMessageByAirportIdAndValueType(w http.ResponseWriter, r *http.Request
 
 	log.Println("GetAllMessageByAirportId requested (IATA="+IATA+", ValuType="+valueType +")")
 
-	message := Persitence.FindAllMessageByAirportIdAndValueType(IATA,valueType)   // We'll work on this
+	messages := Persitence.FindAllMessageByAirportIdAndValueType(IATA,valueType)   // We'll work on this
 	
 	//Encoder le résultat en json
-	if err := json.NewEncoder(w).Encode(message); err != nil {
+	if err := json.NewEncoder(w).Encode(messages); err != nil {
+			panic(err)
+	}
+}
+
+func GetAverageValueByAirportIdValueTypeAndDateDay(w http.ResponseWriter, r *http.Request, p mux.Params) {
+	w = prepareResponseWriter(w);
+
+	IATA := p.ByName("iata")
+	valueType := p.ByName("type")
+	dateDay := p.ByName("date")
+
+	log.Println("GetAverageValueByAirportIdValueTypeAndDateDay requested (IATA="+IATA+", ValueType="+valueType +", DateDay="+dateDay+")")
+
+	messages := Persitence.FindAllMessageByAirportIdAndValueType(IATA,valueType)   // We'll work on this
+	
+	//Encoder le résultat en json
+	if err := json.NewEncoder(w).Encode(messages); err != nil {
 			panic(err)
 	}
 }

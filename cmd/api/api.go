@@ -15,7 +15,7 @@ func main() {
 	//Create and Register the routes
 	router := Router.NewRouter(getRoutes())
 	
-	testCreationMessage()
+	testCreationMessages()
 
 	//ListenAndServe rejte une erreur si il y a un probléme
 	log.Fatal(http.ListenAndServe(":8080", router))
@@ -36,19 +36,23 @@ func getRoutes() Models.Routes {
 		Models.Route{
 			Method: "GET",
 			Path: "/airport/:iata/type/:type",
-			Handle: Controllers.GetAllMessageByAirportIdAndValueType,//OK
+			Handle: Controllers.GetAllMessageByAirportIdAndValueType,
+		},
+		Models.Route{
+			Method: "GET",
+			Path: "/airport/:iata/type/:type/date/:dateDay/moy",
+			Handle: Controllers.GetAverageValueByAirportIdValueTypeAndDateDay,
 		},
 		Models.Route{
 			Method: "POST",
 			Path: "/messages",
-			Handle: Controllers.CreateMessage,//OK
+			Handle: Controllers.CreateMessage,
 		},
 	}
 }
 
-// Give us some seed data
-// init() will be automatically launch upon running
-func testCreationMessage() {
+
+func testCreationMessages() {
 	Persitence.CreateMessage(Models.Message{
 		IdCapteur: 1,
 		IATA: "AAA",
