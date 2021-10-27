@@ -29,17 +29,19 @@ type Data struct {
 
 func main() {
 	config := config.GetConfig()
-	brokerPort := strconv.Itoa(config.BrokerPort)
-	idClient := strconv.Itoa(config.ID)
 
 	keepAlive := make(chan os.Signal)
 	signal.Notify(keepAlive, os.Interrupt, syscall.SIGINT)
 
 	mqtt.Setup(mqtt.LibConfiguration{
 		IsPersistent: true,
+		BrokerUrl: config.BrokerUrl,
+    	BrokerPort: config.BrokerPort,
+		ID: config.ID,
 	})
 
-	mqtt.Connect(config.BrokerUrl+":"+brokerPort, idClient)
+	mqtt.Connect()
+
 	mqtt.Subscribe(config.Topic, byte(config.QOS), onReceive)
 
 	log.Println("Subscribed")
