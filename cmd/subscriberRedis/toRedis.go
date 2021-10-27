@@ -93,7 +93,7 @@ var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
 
 		fmt.Println("creating " + keyAverage)
 	} else {
-		//fmt.Println("keyAverage", Average)
+		fmt.Println("keyAverage", Average)
 		NewAverage, err := clientR.LRange(keyAverage, 0, 0).Result()
 		if err == redis.Nil {
 		}
