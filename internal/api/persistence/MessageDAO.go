@@ -49,8 +49,6 @@ func extractDataFromRedis(redisConnection *redis.Client,keyFilter string) Models
 
 
 func FindAllMessages() Models.Messages {
-	println("FindAll() method")
-
 	redisConnection := redisConnect()
 	defer redisConnection.Close()
 	

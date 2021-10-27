@@ -31,12 +31,12 @@ func getRoutes() Models.Routes {
 		Models.Route{
 			Method: "GET",
 			Path: "/airport/:iata",
-			Handle: Controllers.GetAllMessageByAirportId,//PAS OK
+			Handle: Controllers.GetAllMessageByAirportId,//OK
 		},
 		Models.Route{
 			Method: "GET",
 			Path: "/airport/:iata/type/:type",
-			Handle: Controllers.GetAllMessageByAirportIdAndValueType,//PAS OK
+			Handle: Controllers.GetAllMessageByAirportIdAndValueType,//OK
 		},
 		Models.Route{
 			Method: "POST",

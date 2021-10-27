@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	Persitence "github.com/Rouret/golangProject/internal/api/persistence"
@@ -17,6 +18,8 @@ func prepareResponseWriter(responseWriter http.ResponseWriter) http.ResponseWrit
 }
 
 func GetAllMessages(w http.ResponseWriter, r *http.Request, _ mux.Params) {
+	log.Println("GetAllMessages requested")
+
 	w = prepareResponseWriter(w);
 	w.WriteHeader(http.StatusOK)
 	
@@ -28,9 +31,13 @@ func GetAllMessages(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 }
 
 func GetAllMessageByAirportId(w http.ResponseWriter, r *http.Request, p mux.Params) {
+
+	
 	w = prepareResponseWriter(w);
 
 	IATA := p.ByName("iata") //conversion de l'id récupéré en une variable integer
+
+	log.Println("GetAllMessageByAirportId requested (IATA="+IATA+")")
 	
 	message := Persitence.FindAllMessageByAirportId(IATA)   // We'll work on this
 	
@@ -45,6 +52,8 @@ func GetAllMessageByAirportIdAndValueType(w http.ResponseWriter, r *http.Request
 
 	IATA := p.ByName("iata") //conversion de l'id récupéré en une variable integer
 	valueType := p.ByName("type")
+
+	log.Println("GetAllMessageByAirportId requested (IATA="+IATA+", ValuType="+valueType +")")
 
 	message := Persitence.FindAllMessageByAirportIdAndValueType(IATA,valueType)   // We'll work on this
 	
@@ -75,4 +84,5 @@ func CreateMessage(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 	Persitence.CreateMessage(message)   // We'll work on this
 	w.WriteHeader(http.StatusCreated)
 }
+
 
