@@ -26,16 +26,16 @@ func HandleError(err error) {
 	}
 }
 
-func extractDataFromRedis(redisConnection *redis.Client,keyFilter string) Models.Messages {
+func extractDataFromRedis(redisClient *redis.Client,keyFilter string) Models.Messages {
 	var messages Models.Messages
-	keys, err := redisConnection.Do("KEYS", keyFilter).Result()
+	keys, err := redisClient.Do("KEYS", keyFilter).Result()
 	HandleError(err)
 	
 	for _, key := range keys.([]interface{}) {
 
 		var message Models.Message
 
-		reply, err := redisConnection.Do("GET", key.(string)).String() //Get l'objet de la clé 'key'
+		reply, err := redisClient.Do("GET", key.(string)).String() //Get l'objet de la clé 'key'
 		HandleError(err)
 
 		if err := json.Unmarshal([]byte(reply), &message); err != nil { //Transforme le json de la value dans valeur dans la variable message
@@ -49,35 +49,37 @@ func extractDataFromRedis(redisConnection *redis.Client,keyFilter string) Models
 
 
 func FindAllMessages() Models.Messages {
-	redisConnection := redisConnect()
-	defer redisConnection.Close()
-	
-	return extractDataFromRedis(redisConnection,"*")
+	redisClient := redisConnect()
+	defer redisClient.Close()
+	return extractDataFromRedis(redisClient,"*")
 }
 
 func FindAllMessageByAirportId(IATA string) Models.Messages {
-	redisConnection := redisConnect()
-	defer redisConnection.Close()
-	
-	return extractDataFromRedis(redisConnection,IATA + ":*")
+	redisClient := redisConnect()
+	defer redisClient.Close()
+	return extractDataFromRedis(redisClient,IATA + ":*")
 }
 
 func FindAllMessageByAirportIdAndValueType(IATA string,valueType string) Models.Messages {
-	redisConnection := redisConnect()
-	defer redisConnection.Close()
-	
-	return extractDataFromRedis(redisConnection,IATA + ":" + valueType + ":*")
+	redisClient := redisConnect()
+	defer redisClient.Close()
+	return extractDataFromRedis(redisClient,IATA + ":" + valueType + ":*")
+}
+
+func FindAverageValueByAirportIdValueTypeAndDateDay(IATA string,valueType string,dateDay string) Models.Messages{
+	redisClient := redisConnect()
+	defer redisClient.Close()
+	return extractDataFromRedis(redisClient,"MOY:" + IATA + ":" + valueType + ":" + dateDay)
 }
 
 func CreateMessage(message Models.Message) {
-	
-	redisConnection := redisConnect()
-	defer redisConnection.Close()
+	redisClient := redisConnect()
+	defer redisClient.Close()
 	
 	jsonMessage, err := json.Marshal(message)
 	HandleError(err)
 	
-	_, err = redisConnection.Do("SET", createKeyId(message), jsonMessage).Result()
+	_, err = redisClient.Do("SET", createKeyId(message), jsonMessage).Result()
 	HandleError(err)
 }
 
