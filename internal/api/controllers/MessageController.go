@@ -79,6 +79,18 @@ func GetAverageValueByAirportIdValueTypeAndDateDay(w http.ResponseWriter, r *htt
 	}
 }
 
+func GetAllAirportIds(w http.ResponseWriter, r *http.Request, _ mux.Params){
+	w = prepareResponseWriter(w)
+
+	log.Println("GetAllAirportIds requested")
+
+	messages := Persitence.FindAllAirportIds() 
+
+	if err := json.NewEncoder(w).Encode(messages); err != nil {
+		panic(err)
+	}
+}
+
 func CreateMessage(w http.ResponseWriter, r *http.Request, _ mux.Params) {
 	w = prepareResponseWriter(w)
 

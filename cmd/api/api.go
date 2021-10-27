@@ -26,12 +26,12 @@ func getRoutes() Models.Routes {
 		Models.Route{
 			Method: "GET",
 			Path: "/messages",
-			Handle: Controllers.GetAllMessages,//OK
+			Handle: Controllers.GetAllMessages,
 		},
 		Models.Route{
 			Method: "GET",
 			Path: "/airport/:iata",
-			Handle: Controllers.GetAllMessageByAirportId,//OK
+			Handle: Controllers.GetAllMessageByAirportId,
 		},
 		Models.Route{
 			Method: "GET",
@@ -42,6 +42,11 @@ func getRoutes() Models.Routes {
 			Method: "GET",
 			Path: "/airport/:iata/type/:type/date/:dateDay/moy",
 			Handle: Controllers.GetAverageValueByAirportIdValueTypeAndDateDay,
+		},
+		Models.Route{
+			Method: "GET",
+			Path: "/airport",
+			Handle: Controllers.GetAllAirportIds,
 		},
 		Models.Route{
 			Method: "POST",
@@ -63,7 +68,7 @@ func testCreationMessages() {
 	
 	Persitence.CreateMessage(Models.Message{
 		IdCapteur: 2,
-		IATA: "AAA",
+		IATA: "GGG",
 		TypeValue: "PRESS",
 		Value: 24.2,
 		Timestamp: time.Now().Unix(),
