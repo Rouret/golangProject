@@ -20,8 +20,6 @@ import (
 
 func main() {
 	config := config.GetConfig()
-	brokerPort := strconv.Itoa(config.BrokerPort)
-	idClient := strconv.Itoa(config.ID)
 
 	keepAlive := make(chan os.Signal)
 	signal.Notify(keepAlive, os.Interrupt, syscall.SIGINT)
@@ -29,9 +27,12 @@ func main() {
 
 	mqtt.Setup(mqtt.LibConfiguration{
 		IsPersistent: true,
+		BrokerUrl: config.BrokerUrl,
+    	BrokerPort: config.BrokerPort,
+		ID: config.ID,
 	})
 
-	mqtt.Connect(config.BrokerUrl+":"+brokerPort, idClient)
+	mqtt.Connect()
 	mqtt.Subscribe(config.Topic, byte(config.ID), onReceive)
 
 	log.Println("Subscribed")
