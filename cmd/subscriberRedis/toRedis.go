@@ -66,7 +66,7 @@ var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
 
 	//	keyTimestamp := info.IATA + ":" + info.TypeValue + ":" + date
 
-	dateDay := tm.Format("2006-01-02")
+	dateDay := tm.Format("2006-01-02-03")
 
 	keyAverage := "MOY:" + info.IATA + ":" + info.TypeValue + ":" + dateDay
 
@@ -93,7 +93,7 @@ var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
 
 		fmt.Println("creating " + keyAverage)
 	} else {
-		fmt.Println("keyAverage", Average)
+		fmt.Println("Updating Average of " + keyAverage + Average)
 		NewAverage, err := clientR.LRange(keyAverage, 0, 0).Result()
 		if err == redis.Nil {
 		}
