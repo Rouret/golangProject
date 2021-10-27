@@ -3,7 +3,7 @@
     "BrokerPort": 1883,
     "QOS": 0,
     "ID": 1234,
-    "IATA": "CGN",
+    "IATA": "ABC",
     "ValueType": "TEMP",
     "Topic": "temperature",
     "DelayMessage": 2
