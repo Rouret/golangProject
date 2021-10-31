@@ -58,7 +58,7 @@ func extractFloatFromRedis(redisClient *redis.Client, keyFilter string) []string
 func FindAllMessages() Models.Messages {
 	redisClient := redisConnect()
 	defer redisClient.Close()
-	return extractDataFromRedis(redisClient, "*")
+	return extractDataFromRedis(redisClient, "*[^MOY]:*:*:*")
 }
 
 func FindAllMessageByAirportId(IATA string) Models.Messages {
@@ -80,6 +80,20 @@ func FindAverageValueByAirportIdValueTypeAndDateDay(IATA string, valueType strin
 
 }
 
+func FindAllAirportIds() []string {
+	redisClient := redisConnect()
+	defer redisClient.Close()
+
+	messages := FindAllMessages()
+	keys := []string{}
+
+	for _, v := range messages {
+		keys = append(keys, v.IATA)
+	}
+
+	return removeDuplicateStr(keys)
+}
+
 func CreateMessage(message Models.Message) {
 	redisClient := redisConnect()
 	defer redisClient.Close()
@@ -89,4 +103,17 @@ func CreateMessage(message Models.Message) {
 
 	_, err = redisClient.Do("SET", createKeyId(message), jsonMessage).Result()
 	HandleError(err)
+}
+
+//https://stackoverflow.com/questions/66643946/how-to-remove-duplicates-strings-or-int-from-slice-in-go
+func removeDuplicateStr(strSlice []string) []string {
+	allKeys := make(map[string]bool)
+	list := []string{}
+	for _, item := range strSlice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
 }
