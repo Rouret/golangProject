@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/Rouret/golangProject/internal/config"
@@ -12,14 +11,15 @@ import (
 
 func main() {
 	config := config.GetConfig()
-	brokerPort := strconv.Itoa(config.BrokerPort)
-	idClient := strconv.Itoa(config.ID)
 	
 	mqtt.Setup(mqtt.LibConfiguration{
 		IsPersistent: true,
+		BrokerUrl: config.BrokerUrl,
+    	BrokerPort: config.BrokerPort,
+		ID: config.ID,
 	})
 
-	mqtt.Connect(config.BrokerUrl+":"+brokerPort, idClient)
+	mqtt.Connect()
 	
 	for range time.Tick(time.Second * time.Duration(config.DelayMessage)) {
 		message := sensor.Message{
