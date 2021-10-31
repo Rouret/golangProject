@@ -25,15 +25,6 @@ func getRoutes() Models.Routes {
 	return Models.Routes{
 		Models.Route{
 			Method: "GET",
-<<<<<<< Updated upstream
-			Path: "/messages",
-			Handle: Controllers.GetAllMessages,//OK
-		},
-		Models.Route{
-			Method: "GET",
-			Path: "/airport/:iata",
-			Handle: Controllers.GetAllMessageByAirportId,//OK
-=======
 			Path:   "/messages",
 			Handle: Controllers.GetAllMessages,
 		},
@@ -41,7 +32,6 @@ func getRoutes() Models.Routes {
 			Method: "GET",
 			Path:   "/airport/:iata",
 			Handle: Controllers.GetAllMessageByAirportId,
->>>>>>> Stashed changes
 		},
 		Models.Route{
 			Method: "GET",
@@ -54,14 +44,11 @@ func getRoutes() Models.Routes {
 			Handle: Controllers.GetAverageValueByAirportIdValueTypeAndDateDay,
 		},
 		Models.Route{
-<<<<<<< Updated upstream
-=======
 			Method: "GET",
 			Path:   "/airport",
 			Handle: Controllers.GetAllAirportIds,
 		},
 		Models.Route{
->>>>>>> Stashed changes
 			Method: "POST",
 			Path:   "/messages",
 			Handle: Controllers.CreateMessage,
@@ -80,11 +67,7 @@ func testCreationMessages() {
 
 	Persitence.CreateMessage(Models.Message{
 		IdCapteur: 2,
-<<<<<<< Updated upstream
-		IATA: "AAA",
-=======
 		IATA:      "GGG",
->>>>>>> Stashed changes
 		TypeValue: "PRESS",
 		Value:     24.2,
 		Timestamp: time.Now().Unix(),
