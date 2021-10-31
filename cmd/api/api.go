@@ -14,7 +14,7 @@ import (
 func main() {
 	//Create and Register the routes
 	router := Router.NewRouter(getRoutes())
-	
+
 	testCreationMessages()
 
 	//ListenAndServe rejte une erreur si il y a un probléme
@@ -25,6 +25,7 @@ func getRoutes() Models.Routes {
 	return Models.Routes{
 		Models.Route{
 			Method: "GET",
+<<<<<<< Updated upstream
 			Path: "/messages",
 			Handle: Controllers.GetAllMessages,//OK
 		},
@@ -32,40 +33,60 @@ func getRoutes() Models.Routes {
 			Method: "GET",
 			Path: "/airport/:iata",
 			Handle: Controllers.GetAllMessageByAirportId,//OK
+=======
+			Path:   "/messages",
+			Handle: Controllers.GetAllMessages,
 		},
 		Models.Route{
 			Method: "GET",
-			Path: "/airport/:iata/type/:type",
+			Path:   "/airport/:iata",
+			Handle: Controllers.GetAllMessageByAirportId,
+>>>>>>> Stashed changes
+		},
+		Models.Route{
+			Method: "GET",
+			Path:   "/airport/:iata/type/:type",
 			Handle: Controllers.GetAllMessageByAirportIdAndValueType,
 		},
 		Models.Route{
 			Method: "GET",
-			Path: "/airport/:iata/type/:type/date/:dateDay/moy",
+			Path:   "/airport/:iata/type/:type/date/:dateDay/moy",
 			Handle: Controllers.GetAverageValueByAirportIdValueTypeAndDateDay,
 		},
 		Models.Route{
+<<<<<<< Updated upstream
+=======
+			Method: "GET",
+			Path:   "/airport",
+			Handle: Controllers.GetAllAirportIds,
+		},
+		Models.Route{
+>>>>>>> Stashed changes
 			Method: "POST",
-			Path: "/messages",
+			Path:   "/messages",
 			Handle: Controllers.CreateMessage,
 		},
 	}
 }
 
-
 func testCreationMessages() {
 	Persitence.CreateMessage(Models.Message{
 		IdCapteur: 1,
-		IATA: "AAA",
+		IATA:      "AAA",
 		TypeValue: "TEMP",
-		Value: 15.6,
+		Value:     15.6,
 		Timestamp: time.Now().Unix(),
 	})
-	
+
 	Persitence.CreateMessage(Models.Message{
 		IdCapteur: 2,
+<<<<<<< Updated upstream
 		IATA: "AAA",
+=======
+		IATA:      "GGG",
+>>>>>>> Stashed changes
 		TypeValue: "PRESS",
-		Value: 24.2,
+		Value:     24.2,
 		Timestamp: time.Now().Unix(),
 	})
 }

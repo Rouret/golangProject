@@ -66,7 +66,9 @@ var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
 
 	//	keyTimestamp := info.IATA + ":" + info.TypeValue + ":" + date
 
-	dateDay := tm.Format("2006-01-02-03")
+	dateDay := tm.Format("2006-01-02")
+
+	dateDay = dateDay + "-" + strconv.Itoa(tm.Hour())
 
 	keyAverage := "MOY:" + info.IATA + ":" + info.TypeValue + ":" + dateDay
 
