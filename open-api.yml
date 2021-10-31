@@ -1,0 +1,285 @@
+openapi: 3.0.1
+info:
+  title: GolangProject API
+  version: '0.1'
+servers:
+  # Added by API Auto Mocking Plugin
+  - url: https://virtserver.swaggerhub.com/k-samir/golang-api/0.1
+  - url: http://localhost:8080
+paths:
+  # Message
+  /message:
+    get:
+      summary: Gets All Data from Redis.
+      description: Gets All Data from DB
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMessages_Success'
+       
+    post:
+      summary: Add Message to Redis
+      description: Adds a message to the database.
+      operationId: addMessage
+      requestBody:
+        $ref: '#/components/requestBodies/CreateMessage'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMessages_Success'
+  /airport:
+    get:
+      summary: Gets All Airports IATA in DB.
+      description:  Gets Data from IATA by type 
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAirports_Success'
+       
+  /airport/{IATA}:
+    get:
+      summary: Gets All the Data from IATA Airport.
+      description: Gets All the Data from IATA Airport 
+      parameters:
+        - $ref: '#/components/parameters/IATA'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAirportIATA_Success'
+        
+  /airport/{IATA}/type/{TYPE}:
+    get:
+      summary: Gets Data from IATA by type .
+      description:  Gets Data from IATA by type 
+      parameters:
+        - $ref: '#/components/parameters/IATA'
+        - $ref: '#/components/parameters/TYPE'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAirportIATA_TYPE_Success'
+       
+  /airport/{IATA}/type/{TYPE}/date/{Hour}/moy:
+    get:
+      summary: Gets Data from IATA by type .
+      description:  Gets Data from IATA by type 
+      parameters:
+        - $ref: '#/components/parameters/IATA'
+        - $ref: '#/components/parameters/TYPE'
+        - $ref: '#/components/parameters/Hour'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAverage_Success'
+       
+          
+components:
+  responses:
+    GetAirports_Success:
+      description: Sucess
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IATA'
+          examples:
+           Simple example:
+              $ref: '#/components/examples/ArrayOfIATA'
+    
+    GetMessages_Success:
+      description: Sucess
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+          examples:
+            Simple example:
+              $ref: '#/components/examples/ArrayOfMessages'
+          
+              
+    GetAirportIATA_Success:
+      description: Sucess
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+          examples:
+            Simple example:
+              $ref: '#/components/examples/ArrayOfSameIATA'
+    GetAirportIATA_TYPE_Success:
+        description: Sucess
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+            examples:
+              Simple example:
+                $ref: '#/components/examples/AirportIATA_TYPE'
+    
+    GetAverage_Success:
+        description: Sucess
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Average'
+            examples:
+              Simple example:
+                $ref: '#/components/examples/Average'
+        
+  
+  parameters:
+    IATA:
+      in: path
+      name: IATA
+      description: IATA Code.
+      required: true
+      schema:
+        $ref: '#/components/schemas/IATA'
+    TYPE:
+      in: path
+      name: TYPE
+      description: Type of Data.
+      required: true
+      schema:
+        $ref: '#/components/schemas/TYPE'
+    Hour:
+      in: path
+      name: Hour
+      description: yyyy-mm-dd-hh format of Date.
+      required: true
+      schema:
+        $ref: '#/components/schemas/Hour'
+  requestBodies:
+    CreateMessage:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateMessage'
+          examples:
+            Simple example:
+              $ref: '#/components/examples/CreateMessage'
+  examples:
+    CreateMessage:
+      description: Example request to create a Message.
+      value:
+        IdCapteur: 1
+        IATA: NTE
+        TYPE: WIND
+        Value:  26.4
+        Timestamp: 1635719085
+    Message:
+      description: An example message.
+      value:
+        IdCapteur: 1234
+        IATA: ABC
+        TypeValue: TEMP
+        Value: 22.93599
+        Timestamp: 1635720586
+    ArrayOfIATA:
+      description: Array of IATA
+      value:
+      - ABC
+      - AAA
+    
+    ArrayOfMessages:
+      description: Array of Messages
+      value:
+      - IdCapteur: 1234
+        IATA: ABC,
+        TypeValue: TEMP
+        Value: 22.93599
+        Timestamp: 1635720586
+      - IdCapteur: 2569
+        IATA: NTE,
+        TypeValue: WIND
+        Value: 8.9
+        Timestamp: 1835720586
+    
+    Average:
+      description: Average
+      value:
+        - 25.6
+    
+    ArrayOfSameIATA:
+      description: Array of Messages
+      value:
+      - IdCapteur: 1234
+        IATA: ABC,
+        TypeValue: TEMP
+        Value: 22.93599
+        Timestamp: 1635720586
+      - IdCapteur: 2569
+        IATA: ABC,
+        TypeValue: WIND
+        Value: 8.9
+        Timestamp: 1835720586
+        
+    AirportIATA_TYPE:
+      description: Array of Messages
+      value:
+      - IdCapteur: 1234
+        IATA: ABC,
+        TypeValue: WIND
+        Value: 22.93599
+        Timestamp: 1635720586
+      - IdCapteur: 2569
+        IATA: ABC,
+        TypeValue: WIND
+        Value: 8.9
+        Timestamp: 1835720586
+    
+  schemas:
+    IATA:
+      description: An IATA airport code three-letter geocode designating many airports and metropolitan areas around the world, defined by the International Air Transport Association.
+      type: string
+    
+    Average:
+      description : Average of the sensor Data
+      type: number
+    TYPE:
+      description: Type of Data.
+      type: string
+      
+    IdCapteur:
+      description: ID of Sensor.
+      type: integer
+      
+    Timestamp:
+      description: Timestamp.
+      type: integer
+      
+    Value:
+      description: Value of Sensor.
+      type: number
+
+    Hour:
+      description: yyyy-mm-dd-hh format of Date.
+      type: string
+      
+    Message :
+      description: A message.
+      type: object
+      required: [IdCapteur, IATA,TYPE,Value,Timestamp]
+      properties:
+        IdCapteur:
+          $ref: '#/components/schemas/IdCapteur'
+        IATA:
+          $ref: '#/components/schemas/IATA'
+        TYPE:
+          $ref: '#/components/schemas/TYPE'
+        Value:
+          $ref: '#/components/schemas/Value'
+        Timestamp:
+          $ref: '#/components/schemas/Timestamp'
+      example:
+        $ref: '#/components/examples/Message'
+    CreateMessage:
+      description: A request to create a message.
+      type: object
+      required: [IdCapteur, IATA,TYPE,Value,Timestamp]
+      properties:
+        IdCapteur:
+          $ref: '#/components/schemas/IdCapteur'
+        IATA:
+          $ref: '#/components/schemas/IATA'
+        TYPE:
+          $ref: '#/components/schemas/TYPE'
+        Value:
+          $ref: '#/components/schemas/Value'
+        Timestamp:
+          $ref: '#/components/schemas/Timestamp'
+      example:
+        $ref: '#/components/examples/CreateMessage'
