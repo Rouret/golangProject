@@ -15,16 +15,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/GetMessages_Success'
-       
-    post:
-      summary: Add Message to Redis
-      description: Adds a message to the database.
-      operationId: addMessage
-      requestBody:
-        $ref: '#/components/requestBodies/CreateMessage'
-      responses:
-        '200':
-          $ref: '#/components/responses/GetMessages_Success'
   /airport:
     get:
       summary: Gets All Airports IATA in DB.
