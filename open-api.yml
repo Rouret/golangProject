@@ -15,7 +15,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/GetMessages_Success'
-  /airport:
+  /airports:
     get:
       summary: Gets All Airports IATA in DB.
       description:  Gets Data from IATA by type 
@@ -23,7 +23,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetAirports_Success'
        
-  /airport/{IATA}:
+  /airports/{IATA}:
     get:
       summary: Gets All the Data from IATA Airport.
       description: Gets All the Data from IATA Airport 
@@ -33,7 +33,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetAirportIATA_Success'
         
-  /airport/{IATA}/type/{TYPE}:
+  /airports/{IATA}/type/{TYPE}:
     get:
       summary: Gets Data from IATA by type .
       description:  Gets Data from IATA by type 
@@ -44,7 +44,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetAirportIATA_TYPE_Success'
        
-  /airport/{IATA}/type/{TYPE}/date/{Hour}/moy:
+  /airports/{IATA}/type/{TYPE}/dateHour/{Hour}/moy:
     get:
       summary: Gets Average from IATA by type and Hour .
       description: Gets Average from IATA by type and Hour .
@@ -55,7 +55,18 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/GetAverage_Success'
-       
+  /airports/{IATA}/type/{TYPE}/dateDay/{Day}/moy:
+    get:
+      summary: Gets Average from IATA by type and Day .
+      description: Gets Average from IATA by type and Day .
+      parameters:
+        - $ref: '#/components/parameters/IATA'
+        - $ref: '#/components/parameters/TYPE'
+        - $ref: '#/components/parameters/Day'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAverage_Success'
+     
           
 components:
   responses:
@@ -132,6 +143,13 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/Hour'
+    Day:
+      in: path
+      name: Day
+      description: yyyy-mm-dd format of Day.
+      required: true
+      schema:
+        $ref: '#/components/schemas/Day'
   requestBodies:
     CreateMessage:
       content:
@@ -236,9 +254,12 @@ components:
       type: number
 
     Hour:
+      description: yyyy-mm-dd format of Date.
+      type: string
+    
+    Day:
       description: yyyy-mm-dd-hh format of Date.
       type: string
-      
     Message :
       description: A message.
       type: object
