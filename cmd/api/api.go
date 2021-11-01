@@ -9,16 +9,17 @@ import (
 	Persitence "github.com/Rouret/golangProject/internal/api/persistence"
 	Router "github.com/Rouret/golangProject/internal/api/router"
 	Models "github.com/Rouret/golangProject/internal/models"
+	"github.com/rs/cors"
 )
 
 func main() {
 	//Create and Register the routes
 	router := Router.NewRouter(getRoutes())
 	
-	testCreationMessages()
+	handler := cors.Default().Handler(router)
 
 	//ListenAndServe rejte une erreur si il y a un probléme
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8082", handler))
 }
 
 func getRoutes() Models.Routes {
@@ -30,22 +31,27 @@ func getRoutes() Models.Routes {
 		},
 		Models.Route{
 			Method: "GET",
-			Path: "/airport/:iata",
+			Path: "/airports/:iata",
 			Handle: Controllers.GetAllMessageByAirportId,
 		},
 		Models.Route{
 			Method: "GET",
-			Path: "/airport/:iata/type/:type",
+			Path: "/airports/:iata/type/:type",
 			Handle: Controllers.GetAllMessageByAirportIdAndValueType,
 		},
 		Models.Route{
 			Method: "GET",
-			Path: "/airport/:iata/type/:type/date/:dateDay/moy",
+			Path: "/airports/:iata/type/:type/dateDay/:dateDay/moy",
 			Handle: Controllers.GetAverageValueByAirportIdValueTypeAndDateDay,
 		},
 		Models.Route{
 			Method: "GET",
-			Path: "/airport",
+			Path: "/airports/:iata/type/:type/dateHour/:dateHour/moy",
+			Handle: Controllers.GetAverageValueByAirportIdValueTypeAndDateHour,
+		},
+		Models.Route{
+			Method: "GET",
+			Path: "/airports",
 			Handle: Controllers.GetAllAirportIds,
 		},
 		Models.Route{

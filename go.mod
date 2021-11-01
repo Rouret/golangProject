@@ -36,4 +36,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.8
 )
 
-require github.com/garyburd/redigo v1.6.2 // indirect
+require (
+	github.com/garyburd/redigo v1.6.2 // indirect
+	github.com/rs/cors v1.8.0 // indirect
+)

@@ -26,7 +26,7 @@ func HandleError(err error) {
 	}
 }
 
-func extractDataFromRedis(redisClient *redis.Client, keyFilter string) Models.Messages {
+func extractMessagesDataFromRedis(redisClient *redis.Client, keyFilter string) Models.Messages {
 	var messages Models.Messages
 	keys, err := redisClient.Do("KEYS", keyFilter).Result()
 	HandleError(err)
@@ -58,25 +58,48 @@ func extractFloatFromRedis(redisClient *redis.Client, keyFilter string) []string
 func FindAllMessages() Models.Messages {
 	redisClient := redisConnect()
 	defer redisClient.Close()
-	return extractDataFromRedis(redisClient, "*[^MOY]:*:*:*")
+	return extractMessagesDataFromRedis(redisClient, "*[^MOY]:*:*:*")
 }
 
 func FindAllMessageByAirportId(IATA string) Models.Messages {
 	redisClient := redisConnect()
 	defer redisClient.Close()
-	return extractDataFromRedis(redisClient, IATA+":*")
+	return extractMessagesDataFromRedis(redisClient, IATA+":*")
 }
 
 func FindAllMessageByAirportIdAndValueType(IATA string, valueType string) Models.Messages {
 	redisClient := redisConnect()
 	defer redisClient.Close()
-	return extractDataFromRedis(redisClient, IATA+":"+valueType+":*")
+	return extractMessagesDataFromRedis(redisClient, IATA+":"+valueType+":*")
 }
 
-func FindAverageValueByAirportIdValueTypeAndDateDay(IATA string, valueType string, dateDay string) []string {
+
+func FindAverageValueByAirportIdValueTypeAndDateDay(IATA string, valueType string, dateDay string)  Models.Averages{
 	redisClient := redisConnect()
 	defer redisClient.Close()
-	return extractFloatFromRedis(redisClient, "MOY:"+IATA+":"+valueType+":"+dateDay)
+	
+	var avgs Models.Averages
+
+	keys, err := redisClient.Do("KEYS", "MOY:"+IATA+":"+valueType+":"+dateDay+"-*").Result()
+	HandleError(err)
+
+	for _, key := range keys.([]interface{}) {
+		avgRaw, err := redisClient.LRange(key.(string), 0, 0).Result() //Get l'objet de la clé 'key'
+		HandleError(err)
+		if(len(avgRaw) != 0){
+			avgs = append(avgs, Models.Average{
+				Date:key.(string),
+				Value: avgRaw[0],
+			}) // Ajoute le messages au reste des messages
+		}	
+	}
+	return avgs
+}
+
+func FindAverageValueByAirportIdValueTypeAndDateHour(IATA string, valueType string, dateHour string) []string {
+	redisClient := redisConnect()
+	defer redisClient.Close()
+	return extractFloatFromRedis(redisClient, "MOY:"+IATA+":"+valueType+":"+dateHour)
 
 }
 

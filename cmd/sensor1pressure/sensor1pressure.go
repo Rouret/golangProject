@@ -26,7 +26,7 @@ func main() {
 			IdCapteur: config.ID,
 			IATA:      config.IATA,
 			TypeValue: config.ValueType,
-			Value:     random.GetRandomFloat(1000, 1030),
+			Value:     random.GetRandomFloat(900, 1030),
 			Timestamp: time.Now().Unix(),
 		}
 		mqtt.Send(config.Topic,config.QOS,message,true)
