@@ -61,8 +61,7 @@ func GetAllMessageByAirportIdAndValueType(w http.ResponseWriter, r *http.Request
 		panic(err)
 	}
 }
-
-func GetAverageValueByAirportIdValueTypeAndDateDay(w http.ResponseWriter, r *http.Request, p mux.Params) {
+func GetAverageValueByAirportIdValueTypeAndDateDay(w http.ResponseWriter, r *http.Request, p mux.Params){
 	w = prepareResponseWriter(w)
 
 	IATA := p.ByName("iata")
@@ -72,6 +71,25 @@ func GetAverageValueByAirportIdValueTypeAndDateDay(w http.ResponseWriter, r *htt
 	log.Println("GetAverageValueByAirportIdValueTypeAndDateDay requested (IATA=" + IATA + ", ValueType=" + valueType + ", DateDay=" + dateDay + ")")
 
 	messages := Persitence.FindAverageValueByAirportIdValueTypeAndDateDay(IATA, valueType, dateDay) // We'll work on this
+
+	//Encoder le résultat en json
+	if err := json.NewEncoder(w).Encode(messages); err != nil {
+		panic(err)
+	}
+}
+
+
+
+func GetAverageValueByAirportIdValueTypeAndDateHour(w http.ResponseWriter, r *http.Request, p mux.Params) {
+	w = prepareResponseWriter(w)
+
+	IATA := p.ByName("iata")
+	valueType := p.ByName("type")
+	dateHour := p.ByName("dateHour")
+
+	log.Println("GetAverageValueByAirportIdValueTypeAndDateHour requested (IATA=" + IATA + ", ValueType=" + valueType + ", DateHour=" + dateHour + ")")
+
+	messages := Persitence.FindAverageValueByAirportIdValueTypeAndDateHour(IATA, valueType, dateHour) // We'll work on this
 
 	//Encoder le résultat en json
 	if err := json.NewEncoder(w).Encode(messages); err != nil {

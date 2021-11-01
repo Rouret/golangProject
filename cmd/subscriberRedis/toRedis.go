@@ -51,7 +51,7 @@ func main() {
 }
 
 var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
-	//fmt.Printf("MSG: %s\n", msg.Payload())
+	fmt.Printf("MSG: %s\n", msg.Payload())
 	var info Data
 	json.Unmarshal([]byte(msg.Payload()), &info)
 

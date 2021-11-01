@@ -15,6 +15,7 @@ func NewRouter(routes Models.Routes) *mux.Router {
                 router.Handle(route.Method, route.Path, route.Handle)
                 log.Println("Route registered " + route.Method + " " + route.Path)
         }
+
         log.Println("Router OK")
         return router
 }
