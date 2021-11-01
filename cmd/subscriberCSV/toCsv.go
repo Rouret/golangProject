@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/Rouret/golangProject/internal/config"
-	"github.com/Rouret/golangProject/internal/sensor"
+	"github.com/Rouret/golangProject/internal/models"
 	"github.com/Rouret/mqtt.golang"
 	paho "github.com/eclipse/paho.mqtt.golang"
 )
@@ -42,7 +42,7 @@ func main() {
 }
 
 var onReceive paho.MessageHandler = func(client paho.Client, msg paho.Message) {
-	var info sensor.Message
+	var info models.Message
 
 	json.Unmarshal([]byte(msg.Payload()), &info)
 	log.Printf("Info Received from " + info.IATA + "\n")

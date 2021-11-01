@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/Rouret/golangProject/internal/config"
+	"github.com/Rouret/golangProject/internal/models"
 	"github.com/Rouret/golangProject/internal/random"
-	"github.com/Rouret/golangProject/internal/sensor"
 	"github.com/Rouret/mqtt.golang"
 )
 
@@ -22,7 +22,7 @@ func main() {
 	mqtt.Connect()
 	
 	for range time.Tick(time.Second * time.Duration(config.DelayMessage)) {
-		message := sensor.Message{
+		message := models.Message{
 			IdCapteur: config.ID,
 			IATA:      config.IATA,
 			TypeValue: config.ValueType,
