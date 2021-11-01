@@ -46,8 +46,8 @@ paths:
        
   /airport/{IATA}/type/{TYPE}/date/{Hour}/moy:
     get:
-      summary: Gets Data from IATA by type .
-      description:  Gets Data from IATA by type 
+      summary: Gets Average from IATA by type and Hour .
+      description: Gets Average from IATA by type and Hour .
       parameters:
         - $ref: '#/components/parameters/IATA'
         - $ref: '#/components/parameters/TYPE'
