@@ -19,7 +19,7 @@ func main() {
 	handler := cors.Default().Handler(router)
 
 	//ListenAndServe rejte une erreur si il y a un probléme
-	log.Fatal(http.ListenAndServe(":8082", handler))
+	log.Fatal(http.ListenAndServe(":8000", handler))
 }
 
 func getRoutes() Models.Routes {
